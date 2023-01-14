@@ -9,7 +9,7 @@ import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.muzamil.rickamortywithpaging3.ui.component.MainScreen
+import com.muzamil.rickamortywithpaging3.ui.component.Home
 import com.muzamil.rickamortywithpaging3.ui.theme.RickAMortyWithPaging3Theme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -26,7 +26,7 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colors.background
                 ) {
 
-                    MainScreen()
+                    Home()
                 }
             }
         }

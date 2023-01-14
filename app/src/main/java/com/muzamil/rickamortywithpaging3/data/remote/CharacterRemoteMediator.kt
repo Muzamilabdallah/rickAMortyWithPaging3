@@ -1,7 +1,9 @@
 package com.muzamil.rickamortywithpaging3.data.remote
 
 
+import android.util.Log
 import androidx.paging.ExperimentalPagingApi
+import androidx.paging.LoadState.Loading.endOfPaginationReached
 import androidx.paging.LoadType
 import androidx.paging.PagingState
 import androidx.paging.RemoteMediator
@@ -44,25 +46,13 @@ class CharacterRemoteMediator(
         state: PagingState<Int, Character>
     ): MediatorResult {
 
-        val page: Int = when (loadType) {
-            LoadType.REFRESH -> {
-                val remoteKeys = getRemoteKeyClosestToCurrentPosition(state)
-                remoteKeys?.nextKey?.minus(1) ?: 1
+        val page = when (val pageKeyData = getKeyPageData(loadType, state)) {
+            is MediatorResult.Success -> {
+                return pageKeyData
             }
-            LoadType.PREPEND -> {
-                val remoteKeys = getRemoteKeyForFirstItem(state)
-                val prevKey = remoteKeys?.prevKey ?: return MediatorResult.Success(
-                    endOfPaginationReached = false
-                )
-                prevKey
+            else -> {
+                pageKeyData as Int
             }
-            LoadType.APPEND -> {
-                val remoteKeys = getRemoteKeyForLastItem(state)
-                val nextKey = remoteKeys?.nextKey
-                nextKey
-                    ?: return MediatorResult.Success(endOfPaginationReached = remoteKeys != null)
-            }
-
         }
 
         try {
@@ -77,53 +67,87 @@ class CharacterRemoteMediator(
                     db.characterDao().deleteCharacters()
                     db.characterDao().deleteRemoteKeys()
                 }
-                result?.data?.characters?.results?.map {
-                    db.characterDao().insertAllRemote(
-                        RemoteKey(
-                            characterId = it?.id!!,
-                            page = page,
-                            nextKey = nextKey,
-                            prevKey = prevKey,
-                            created_at = System.currentTimeMillis()
-                        )
+
+                val remoteKeys = result?.data?.characters?.results?.map {
+                    RemoteKey(
+                        characterId = it?.id!!,
+                        prevKey = prevKey,
+                        page = page,
+                        nextKey = nextKey
                     )
                 }
-                result?.data?.mapToCharacter()?.characters?.let {
-                    db.characterDao().insertAll(it)
+
+                remoteKeys?.let {
+                    db.characterDao().insertAllRemote(
+                        it
+                    )
                 }
 
+
+            result?.data?.mapToCharacter()?.characters?.let {
+                db.characterDao().insertAll( it.onEachIndexed { _, character -> character.page = page })
             }
-            return RemoteMediator.MediatorResult.Success(endOfPaginationReached = endOfPaginationReached == true)
-
-        } catch (e: ApolloException) {
-            return RemoteMediator.MediatorResult.Error(e)
-        }
-    }
-
-    private suspend fun getRemoteKeyClosestToCurrentPosition(state: PagingState<Int, Character>): RemoteKey? {
-        return state.anchorPosition?.let { position ->
-            state.closestItemToPosition(position)?.id?.let { id ->
-                db.characterDao().getRemoteKeyById(id)
-            }
-        }
-    }
-
-    private suspend fun getRemoteKeyForFirstItem(state: PagingState<Int, Character>): RemoteKey? {
-        return state.pages.firstOrNull {
-            it.data.isNotEmpty()
-        }?.data?.firstOrNull()?.let { character ->
-            db.characterDao().getRemoteKeyById(character.id)
-        }
-    }
-
-    private suspend fun getRemoteKeyForLastItem(state: PagingState<Int, Character>): RemoteKey? {
-        return state.pages.lastOrNull {
-            it.data.isNotEmpty()
-        }?.data?.lastOrNull()?.let { character ->
-            db.characterDao().getRemoteKeyById(character.id)
 
         }
+        return RemoteMediator.MediatorResult.Success(endOfPaginationReached = endOfPaginationReached == true)
+
+    } catch (e: ApolloException)
+    {
+        return RemoteMediator.MediatorResult.Error(e)
     }
+}
+
+private suspend fun getKeyPageData(
+    loadType: LoadType,
+    state: PagingState<Int, com.muzamil.rickamortywithpaging3.domain.entity.Character>
+): Any {
+    return when (loadType) {
+        LoadType.REFRESH -> {
+            val remoteKeys = getRemoteKeyClosestToCurrentPosition(state)
+            remoteKeys?.nextKey?.minus(1) ?: 1
+        }
+        LoadType.APPEND -> {
+
+            val remoteKeys = getRemoteKeyForLastItem(state)
+            val nextKey = remoteKeys?.nextKey
+            return nextKey ?: RemoteMediator.MediatorResult.Success(endOfPaginationReached = false)
+        }
+        LoadType.PREPEND -> {
+
+            val remoteKeys = getRemoteKeyForFirstItem(state)
+            val prevKey = remoteKeys?.prevKey ?: return RemoteMediator.MediatorResult.Success(
+                endOfPaginationReached = false
+            )
+            prevKey
+        }
+    }
+}
+
+
+private suspend fun getRemoteKeyClosestToCurrentPosition(state: PagingState<Int, Character>): RemoteKey? {
+    return state.anchorPosition?.let { position ->
+        state.closestItemToPosition(position)?.id?.let { id ->
+            db.characterDao().getRemoteKeyById(id)
+        }
+    }
+}
+
+private suspend fun getRemoteKeyForFirstItem(state: PagingState<Int, Character>): RemoteKey? {
+    return state.pages.firstOrNull {
+        it.data.isNotEmpty()
+    }?.data?.firstOrNull()?.let { character ->
+        db.characterDao().getRemoteKeyById(character.id)
+    }
+}
+
+private suspend fun getRemoteKeyForLastItem(state: PagingState<Int, Character>): RemoteKey? {
+    return state.pages.lastOrNull {
+        it.data.isNotEmpty()
+    }?.data?.lastOrNull()?.let { character ->
+        db.characterDao().getRemoteKeyById(character.id)
+
+    }
+}
 
 
 }

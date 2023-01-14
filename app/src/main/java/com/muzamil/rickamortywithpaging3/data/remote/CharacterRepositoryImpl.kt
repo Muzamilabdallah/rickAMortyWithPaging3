@@ -27,7 +27,7 @@ class CharacterRepositoryImpl(
         Pager(
             config = PagingConfig(
                 pageSize = NETWORK_PAGE_SIZE,
-                prefetchDistance = 10,
+                prefetchDistance = 20,
                 initialLoadSize = MifareUltralight.PAGE_SIZE,
             ),
             pagingSourceFactory = {
@@ -40,7 +40,7 @@ class CharacterRepositoryImpl(
         ).flow
 
     companion object {
-        const val NETWORK_PAGE_SIZE = 20
+        const val NETWORK_PAGE_SIZE = 10
     }
 
 }

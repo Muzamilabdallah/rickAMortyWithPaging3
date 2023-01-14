@@ -12,9 +12,11 @@ import com.muzamil.rickamortywithpaging3.data.remote.CharacterRemoteMediator
 import com.muzamil.rickamortywithpaging3.data.remote.CharacterRepository
 import com.muzamil.rickamortywithpaging3.domain.entity.Character
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -25,6 +27,6 @@ class CharacterViewModel @Inject constructor(
     ViewModel() {
 
     val pager: Flow<PagingData<Character>> =
-        characterRepository.getCharacterFromDb().cachedIn(viewModelScope)
+        characterRepository.getCharacterFromDb().cachedIn(viewModelScope).flowOn(Dispatchers.IO)
 
 }
