@@ -3,7 +3,7 @@
 
 # rickAndMorty app (Page from network and database)
 
- this project is simple project show you how to Load data from database and network using paging3 with compose
+ this is simple project show you how to Load data from database and network using paging3 with compose
 the Idea is to sync loading data from db with network , I have used Remote mediator paging source to   load data from network when data base run out   of cached data.
 this way your App fetch  from a local database cache and only makes requests to the network when there is no more data in the database.
 
