@@ -1,4 +1,4 @@
-package com.muzamil.rickamortywithpaging3.presentation.component
+package com.muzamil.rickamortywithpaging3.ui.component
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
@@ -18,9 +18,10 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.LoadState
 import androidx.paging.LoadStates
 import androidx.paging.compose.collectAsLazyPagingItems
+import androidx.paging.compose.items
 import coil.compose.AsyncImagePainter
 import coil.compose.rememberAsyncImagePainter
-import com.muzamil.rickamortywithpaging3.presentation.CharacterViewModel
+import com.muzamil.rickamortywithpaging3.ui.CharacterViewModel
 
 @Composable
 fun MainScreen() {
@@ -30,18 +31,16 @@ fun MainScreen() {
     val loadState = characters.loadState.mediator
 
     LazyColumn {
-        items(count = characters.itemCount) { index ->
-            val item = characters[index]
-
+        items(items  = characters) { character ->
             Row(
                 horizontalArrangement = Arrangement.SpaceEvenly,
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                if (item?.image != null) {
+                if (character != null) {
                     var isImageLoading by remember { mutableStateOf(false) }
 
                     val painter = rememberAsyncImagePainter(
-                        model = item.image,
+                        model = character?.image,
                     )
 
                     isImageLoading = when (painter.state) {
@@ -73,14 +72,14 @@ fun MainScreen() {
                     }
                 }
                 Column {
-                    item?.name?.let {
+                    character?.name?.let {
                         Text(
                             modifier = Modifier
                                 .padding(vertical = 18.dp, horizontal = 8.dp),
                             text = it
                         )
                     }
-                    item?.species?.let {
+                    character?.species?.let {
                         Text(
                             modifier = Modifier
                                 .padding(vertical = 18.dp, horizontal = 8.dp),

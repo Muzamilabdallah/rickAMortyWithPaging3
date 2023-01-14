@@ -6,14 +6,11 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.hilt.navigation.compose.hiltViewModel
-import com.muzamil.rickamortywithpaging3.presentation.CharacterViewModel
-import com.muzamil.rickamortywithpaging3.presentation.component.MainScreen
-import com.muzamil.rickamortywithpaging3.presentation.ui.theme.RickAMortyWithPaging3Theme
+import com.muzamil.rickamortywithpaging3.ui.component.MainScreen
+import com.muzamil.rickamortywithpaging3.ui.theme.RickAMortyWithPaging3Theme
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint

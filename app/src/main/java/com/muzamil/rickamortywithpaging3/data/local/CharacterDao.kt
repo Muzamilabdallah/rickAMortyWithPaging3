@@ -11,15 +11,12 @@ import com.muzamil.rickamortywithpaging3.domain.entity.RemoteKey
 
 @Dao
 interface CharacterDao {
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(characters: List<Character>)
-
     @Query("SELECT * From character ORDER BY page")
       fun getCharacter(): PagingSource<Int, Character>
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertAllRemote(remoteKey: RemoteKey)
-
     @Query("SELECT * From remote_key Where id = :id")
     suspend fun getRemoteKeyById(id: String?): RemoteKey?
     @Query("SELECT created_at From remote_key Order By created_at DESC LIMIT 1")

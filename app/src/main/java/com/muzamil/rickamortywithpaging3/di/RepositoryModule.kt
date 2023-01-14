@@ -2,6 +2,7 @@ package com.muzamil.rickamortywithpaging3.di
 
 import com.apollographql.apollo3.ApolloClient
 import com.muzamil.rickamortywithpaging3.data.local.CharacterDao
+import com.muzamil.rickamortywithpaging3.data.local.CharacterDatabase
 import com.muzamil.rickamortywithpaging3.data.remote.CharacterRepository
 import com.muzamil.rickamortywithpaging3.data.remote.CharacterRepositoryImpl
 
@@ -19,7 +20,7 @@ class RepositoryModule {
     @Provides
     fun provideChatRepository(
         apolloClient: ApolloClient,
-        characterDao: CharacterDao
+        characterDatabase: CharacterDatabase
     ): CharacterRepository =
-        CharacterRepositoryImpl(characterDao = characterDao, apolloClient = apolloClient)
+        CharacterRepositoryImpl(characterDatabase = characterDatabase, apolloClient = apolloClient)
 }

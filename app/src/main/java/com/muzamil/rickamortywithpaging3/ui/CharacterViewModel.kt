@@ -1,4 +1,4 @@
-package com.muzamil.rickamortywithpaging3.presentation
+package com.muzamil.rickamortywithpaging3.ui
 
 import android.graphics.Movie
 import android.nfc.tech.MifareUltralight

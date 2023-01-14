@@ -9,6 +9,7 @@ import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.exception.ApolloException
 import com.muzamil.rickamortywithpaging3.GetCharactersQuery
 import com.muzamil.rickamortywithpaging3.data.local.CharacterDao
+import com.muzamil.rickamortywithpaging3.data.local.CharacterDatabase
 import com.muzamil.rickamortywithpaging3.domain.entity.Character
 import com.muzamil.rickamortywithpaging3.domain.entity.CharacterResponse
 import com.muzamil.rickamortywithpaging3.domain.entity.mapToCharacter
@@ -17,7 +18,7 @@ import kotlinx.coroutines.flow.flow
 
 class CharacterRepositoryImpl(
     private val apolloClient: ApolloClient,
-    private val characterDao: CharacterDao
+    private val characterDatabase: CharacterDatabase
 ) : CharacterRepository {
 
 
@@ -30,16 +31,16 @@ class CharacterRepositoryImpl(
                 initialLoadSize = MifareUltralight.PAGE_SIZE,
             ),
             pagingSourceFactory = {
-                characterDao.getCharacter()
+                characterDatabase.characterDao().getCharacter()
             },
             remoteMediator = CharacterRemoteMediator(
                 apolloClient,
-                characterDao,
+                characterDatabase,
             )
         ).flow
 
     companion object {
-        const val NETWORK_PAGE_SIZE = 10
+        const val NETWORK_PAGE_SIZE = 20
     }
 
 }

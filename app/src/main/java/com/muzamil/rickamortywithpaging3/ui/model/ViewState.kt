@@ -1,4 +1,4 @@
-package com.muzamil.rickamortywithpaging3.presentation.model
+package com.muzamil.rickamortywithpaging3.ui.model
 
 sealed class ViewState<T>(
     val value: T? = null,

@@ -1,4 +1,4 @@
-package com.muzamil.rickamortywithpaging3.presentation.ui.theme
+package com.muzamil.rickamortywithpaging3.ui.theme
 
 import androidx.compose.material.Typography
 import androidx.compose.ui.text.TextStyle

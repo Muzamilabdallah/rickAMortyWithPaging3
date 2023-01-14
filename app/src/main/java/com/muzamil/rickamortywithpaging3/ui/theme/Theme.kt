@@ -1,4 +1,4 @@
-package com.muzamil.rickamortywithpaging3.presentation.ui.theme
+package com.muzamil.rickamortywithpaging3.ui.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material.MaterialTheme

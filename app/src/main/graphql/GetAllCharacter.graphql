@@ -1,5 +1,5 @@
-query GetCharacters($page:Int!,$name:String!)   {
-    characters(page:$page,filter:{name:$name}){
+query GetCharacters($page:Int!)   {
+    characters(page:$page){
         results{
             id
             gender
